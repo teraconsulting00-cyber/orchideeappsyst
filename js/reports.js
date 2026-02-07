@@ -3,9 +3,10 @@
  */
 const ReportUtils = {
   get logoUrl() {
-    if (typeof window === "undefined" || !window.location) return "images/logo.png";
+    const path = (typeof CONFIG !== "undefined" && CONFIG.app && CONFIG.app.favicon) ? CONFIG.app.favicon : "images/logo.png";
+    if (typeof window === "undefined" || !window.location) return path;
     const base = window.location.origin + window.location.pathname.replace(/\/[^/]*$/, "/");
-    return base + "images/logo.png";
+    return base + path;
   },
 
   buildHeader(meta) {
@@ -16,8 +17,8 @@ const ReportUtils = {
       <div class="report-header">
         <img src="${this.logoUrl}" alt="Orchidé Nature" class="logo" crossorigin="anonymous">
         <div class="brand">
-          <h1>Orchidé Nature</h1>
-          <p>Système de Gestion Multi-Agences</p>
+          <h1>${(typeof CONFIG !== "undefined" && CONFIG.app) ? CONFIG.app.title : "Orchidé Nature"}</h1>
+          <p>${(typeof CONFIG !== "undefined" && CONFIG.app) ? CONFIG.app.tagline : "Système de Gestion Multi-Agences"}</p>
         </div>
       </div>
       <div class="report-meta">
@@ -31,7 +32,7 @@ const ReportUtils = {
   buildFooter() {
     return `
       <div class="report-footer">
-        © ${new Date().getFullYear()} Orchidé Nature — Document généré automatiquement
+        © ${new Date().getFullYear()} ${(typeof CONFIG !== "undefined" && CONFIG.app) ? CONFIG.app.title : "Orchidé Nature"} — Document généré automatiquement
       </div>
     `;
   },

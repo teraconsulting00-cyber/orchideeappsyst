@@ -10,6 +10,7 @@ function formatCurrency(amount) {
 
 async function init() {
   if (!user) return;
+  var brand = document.getElementById("appBrand"); if (brand && typeof CONFIG !== "undefined") brand.textContent = CONFIG.app.header;
   document.getElementById("userName").textContent = user.nom || user.email;
   document.getElementById("agenceName").textContent = user.nom || "Mon Agence";
   document.getElementById("agenceInfo").textContent = "ID: " + (user.agence_id || "");

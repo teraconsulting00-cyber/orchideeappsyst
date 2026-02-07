@@ -10,6 +10,7 @@ function formatCurrency(amount) {
 
 async function init() {
   if (!user) return;
+  var h = document.getElementById("caisseHeader"); if (h && typeof CONFIG !== "undefined" && CONFIG.app) h.textContent = CONFIG.app.title + " - Caisse";
   document.getElementById("caissierName").textContent = user.nom || user.email;
   await loadProducts();
   document.querySelectorAll(".calc-btn").forEach((btn) => {

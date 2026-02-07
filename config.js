@@ -1,6 +1,10 @@
 const CONFIG = {
   app: {
     name: "Orchidé Nature Management System",
+    title: "Orchidé Nature",
+    header: "ORCHIDÉ NATURE",
+    tagline: "Système de Gestion Multi-Agences",
+    favicon: "images/logo.png",
     version: "2.0.0",
     currency: "CFA",
     locale: "fr-FR"

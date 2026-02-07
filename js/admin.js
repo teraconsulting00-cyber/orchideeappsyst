@@ -29,6 +29,7 @@ function getDateRange(periode) {
 
 async function init() {
   if (!user) return;
+  var brand = document.getElementById("appBrand"); if (brand && typeof CONFIG !== "undefined") brand.textContent = CONFIG.app.header;
   document.getElementById("userName").textContent = user.nom || user.email;
   const r = await apiService.getAgences();
   if (r.success && r.data.agences) {

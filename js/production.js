@@ -33,6 +33,7 @@ function handleLogout() {
 
 async function init() {
   if (!user) return;
+  var brand = document.getElementById("appBrand"); if (brand && typeof CONFIG !== "undefined") brand.textContent = CONFIG.app.header;
   agenceId = getAgenceId();
   document.getElementById("userName").textContent = user.nom || user.email;
   document.getElementById("agenceLabel").textContent = user.agence_id || user.nom || "—";

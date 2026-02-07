@@ -1,3 +1,7 @@
+if (typeof CONFIG !== "undefined") {
+  var _b = document.getElementById("loginBrand"); if (_b) _b.textContent = CONFIG.app.title;
+  var _t = document.getElementById("loginTagline"); if (_t) _t.textContent = CONFIG.app.tagline;
+}
 document.getElementById("loginForm").addEventListener("submit", async (e) => {
   e.preventDefault();
   const email = document.getElementById("email").value.trim();

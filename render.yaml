@@ -1,0 +1,8 @@
+# Render.com - Configuration Orchidé Nature
+services:
+  - type: web
+    name: orchidee-nature
+    env: node
+    buildCommand: npm install
+    startCommand: npm start
+    plan: free

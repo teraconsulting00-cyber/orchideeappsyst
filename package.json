@@ -10,7 +10,7 @@
   },
   "keywords": ["gestion", "multi-agences", "caisse"],
   "author": "Orchidé Nature",
-  "license": "PROPRIETARY",
+  "license": "UNLICENSED",
   "dependencies": {
     "better-sqlite3": "^11.6.0",
     "express": "^4.21.0"
