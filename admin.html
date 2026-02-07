@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin - Orchidé Nature</title>
+<link rel="stylesheet" href="css/admin.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+</head>
+<body>
+<div class="admin-container">
+<div class="sidebar">
+<div class="logo-wrap"><img src="images/logo.png" alt="Orchidé Nature" class="logo-img"><span>ORCHIDÉ NATURE</span></div>
+<nav class="menu">
+<a class="menu-item active" data-section="dashboard"><svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg><span>Dashboard</span></a>
+<a class="menu-item" data-section="rapports"><svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.5a2 2 0 012 2v11a2 2 0 01-2 2z"/></svg><span>Rapports</span></a>
+<a class="menu-item" data-section="stocks"><svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg><span>Stocks</span></a>
+<a class="menu-item" data-section="notifications"><svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 00-6-6 6 6 0 00-6 6v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg><span>Notifications</span></a>
+<a class="menu-item" data-section="parametres"><svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 2.31 1.04 1.37 2.573a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-1.04 2.31-2.573 1.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-2.31-1.04-1.37-2.573a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543 1.04-2.31 2.573-1.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg><span>Paramètres</span></a>
+</nav>
+</div>
+<div class="main-content">
+<header class="header">
+<div><h1>Administration</h1><p id="headerSubtitle">Toutes les agences</p></div>
+<div class="user-info"><span id="userName"></span><button type="button" class="logout-btn" onclick="handleLogout()">Déconnexion</button></div>
+</header>
+<div class="filters" id="filtersBar">
+<div class="filter-group"><label>Agence</label><select id="agenceFilter"><option value="">Toutes</option></select></div>
+<div class="filter-group"><label>Période</label><select id="periodeFilter"><option value="jour">Aujourd'hui</option><option value="semaine">Semaine</option><option value="mois" selected>Mois</option></select></div>
+<button type="button" class="btn btn-primary" id="btnApplyFilters">Appliquer</button>
+</div>
+<section id="section-dashboard" class="content-section">
+<div class="stats-grid">
+<div class="stat-card primary"><h3>CA Total</h3><div class="value" id="caTotal">0 CFA</div></div>
+<div class="stat-card success"><h3>Opérations</h3><div class="value" id="nbOperations">0</div></div>
+<div class="stat-card warning"><h3>Commandes</h3><div class="value" id="nbCommandes">0</div></div>
+<div class="stat-card danger"><h3>Alertes</h3><div class="value" id="nbAlertes">0</div></div>
+</div>
+<div class="card"><h2>Évolution du CA</h2><div class="chart-container"><canvas id="caChart"></canvas></div></div>
+<div class="card"><h2>Performance par agence</h2><div class="chart-container"><canvas id="agencesChart"></canvas></div></div>
+</section>
+<section id="section-rapports" class="content-section hidden">
+<div class="card"><h2>Rapports d'activité</h2><p class="muted">Rapports globaux ou par agence.</p><button type="button" class="btn btn-primary" id="btnExportRapport">Exporter rapport (période)</button></div>
+</section>
+<section id="section-stocks" class="content-section hidden">
+<div class="card"><h2>Stocks par agence</h2><div class="table-wrap"><table class="data-table" id="stocksTable"><thead><tr><th>Agence</th><th>Produit</th><th>Quantité</th></tr></thead><tbody></tbody></table></div></div>
+</section>
+<section id="section-notifications" class="content-section hidden">
+<div class="card"><h2>Notifications envoyées</h2><p class="muted">Valider comme traité et notifier le compte concerné.</p><div class="table-wrap"><table class="data-table" id="notifTable"><thead><tr><th>Date</th><th>Type</th><th>Canal</th><th>Référence</th><th>Statut</th><th>Action</th></tr></thead><tbody></tbody></table></div></div>
+</section>
+<section id="section-parametres" class="content-section hidden">
+<div class="card"><h2>Paramètres admin</h2><form id="parametresForm"><div class="form-group"><label><input type="checkbox" id="param_notif_chaque_op"> Recevoir une notification pour chaque opération</label></div><div class="form-group"><label><input type="checkbox" id="param_synthese_jour"> Recevoir une synthèse en fin de journée</label></div><div class="form-group"><label><input type="checkbox" id="param_whatsapp" checked> Envoyer les notifications sur WhatsApp</label></div><div class="form-group"><label><input type="checkbox" id="param_commande_admin" checked> Chaque commande notifie tous les admins</label></div><div class="form-group"><label>Numéro WhatsApp admin</label><input type="text" id="param_whatsapp_number" placeholder="+33..."></div><button type="submit" class="btn btn-primary">Enregistrer</button></form></div>
+</section>
+</div>
+</div>
+<script src="config.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/api.js"></script>
+<script src="js/admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Connexion - Orchidé Nature</title>
+<link rel="stylesheet" href="css/login.css">
+</head>
+<body>
+<div class="login-container">
+<div class="login-card">
+<div class="logo-section">
+<img src="images/logo.png" alt="Orchidé Nature" class="logo">
+<h1>Orchidé Nature</h1>
+<p>Système de Gestion Multi-Agences</p>
+</div>
+<form id="loginForm" class="login-form">
+<div class="form-group">
+<label for="email">Identifiant</label>
+<input type="email" id="email" name="email" required autocomplete="username">
+</div>
+<div class="form-group">
+<label for="password">Mot de passe</label>
+<div class="password-input">
+<input type="password" id="password" name="password" required autocomplete="current-password">
+<button type="button" class="toggle-password" id="togglePassword">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+<circle cx="12" cy="12" r="3"></circle>
+</svg>
+</button>
+</div>
+</div>
+<div class="form-group">
+<label class="checkbox-label">
+<input type="checkbox" id="rememberMe">
+<span>Se souvenir de moi</span>
+</label>
+</div>
+<button type="submit" class="btn-login" id="loginBtn">
+<span class="btn-text">Se connecter</span>
+<span class="btn-loading" style="display:none;">
+<svg class="spinner" width="20" height="20" viewBox="0 0 24 24">
+<circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none" opacity="0.25"></circle>
+<path d="M12 2 A10 10 0 0 1 22 12" stroke="currentColor" stroke-width="4" fill="none" stroke-linecap="round"></path>
+</svg>
+Connexion...
+</span>
+</button>
+<div class="error-message" id="errorMessage" style="display:none;"></div>
+</form>
+<div class="login-footer">
+<a href="#" id="forgotPassword">Mot de passe oublié ?</a>
+</div>
+</div>
+<div class="login-info">
+<p>Version 2.0.0 | © 2026 Orchidé Nature</p>
+</div>
+</div>
+<script src="config.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/login.js"></script>
+</body>
+</html>

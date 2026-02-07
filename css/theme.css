@@ -1,0 +1,40 @@
+/**
+ * Orchidé Nature - Thème doré
+ * Variables partagées pour tout le système
+ */
+:root {
+  /* Doré principal */
+  --gold: #c9a227;
+  --gold-light: #d4af37;
+  --gold-dark: #a67c00;
+  --gold-pale: #f4e4bc;
+  --gold-bg: #faf6eb;
+  /* Fonds */
+  --bg-page: #faf8f3;
+  --bg-card: #ffffff;
+  --bg-sidebar: #1a1612;
+  --bg-sidebar-hover: #2c2416;
+  --bg-sidebar-active: rgba(201, 162, 39, 0.2);
+  /* Texte */
+  --text-primary: #1a1612;
+  --text-secondary: #5c5348;
+  --text-muted: #8c8378;
+  --text-on-gold: #1a1612;
+  /* Bordures & ombres */
+  --border: rgba(201, 162, 39, 0.2);
+  --shadow-sm: 0 2px 8px rgba(26, 22, 18, 0.06);
+  --shadow: 0 4px 20px rgba(26, 22, 18, 0.08);
+  --shadow-lg: 0 12px 40px rgba(26, 22, 18, 0.12);
+  /* États */
+  --success: #2d7a4f;
+  --success-bg: #e8f5ee;
+  --warning: #b8860b;
+  --danger: #b91c1c;
+  --danger-bg: #fef2f2;
+  --info: #1e5a8a;
+  /* UI */
+  --radius: 12px;
+  --radius-sm: 8px;
+  --radius-lg: 16px;
+  --transition: 0.25s ease;
+}

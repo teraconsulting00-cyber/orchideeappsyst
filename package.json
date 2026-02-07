@@ -1,0 +1,18 @@
+{
+  "name": "orchidee-nature-system",
+  "version": "2.0.0",
+  "description": "Système de gestion multi-agences Orchidé Nature",
+  "scripts": {
+    "start": "node server.js",
+    "backup": "node server.js backup",
+    "seed:ramco": "node server/seed-ramco.js",
+    "deploy": "vercel"
+  },
+  "keywords": ["gestion", "multi-agences", "caisse"],
+  "author": "Orchidé Nature",
+  "license": "PROPRIETARY",
+  "dependencies": {
+    "better-sqlite3": "^11.6.0",
+    "express": "^4.21.0"
+  }
+}

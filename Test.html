@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test API - Orchidé Nature</title>
+<style>
+body { font-family: Arial, sans-serif; max-width: 1200px; margin: 20px auto; padding: 20px; }
+.section { margin-bottom: 30px; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+input, select, textarea { padding: 8px; margin: 5px 0; width: 100%; box-sizing: border-box; }
+button { padding: 10px 20px; background: #4CAF50; color: white; border: none; cursor: pointer; margin: 5px; }
+button:hover { background: #45a049; }
+.result { background: #f4f4f4; padding: 10px; margin-top: 10px; border-radius: 3px; white-space: pre-wrap; max-height: 400px; overflow-y: auto; }
+.success { color: green; }
+.error { color: red; }
+table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+th { background: #4CAF50; color: white; }
+</style>
+</head>
+<body>
+
+<h1>Test API Orchidé Nature</h1>
+
+<div class="section">
+<h2>Configuration</h2>
+<label>URL API:</label>
+<input type="text" id="apiUrl" placeholder="https://script.google.com/macros/s/.../exec">
+<button onclick="saveConfig()">Sauvegarder</button>
+<small id="configStatus"></small>
+</div>
+
+<div class="section">
+<h2>1. Test Connexion (Login)</h2>
+<input type="email" id="loginEmail" placeholder="Email" value="admin@orchidenature.com">
+<input type="password" id="loginPassword" placeholder="Password" value="admin123">
+<button onclick="testLogin()">Tester Login</button>
+<div id="loginResult" class="result"></div>
+</div>
+
+<div class="section">
+<h2>2. Liste des Comptes</h2>
+<button onclick="testGetComptes()">Charger Comptes</button>
+<div id="comptesResult" class="result"></div>
+<div id="comptesTable"></div>
+</div>
+
+<div class="section">
+<h2>3. Liste des Agences</h2>
+<button onclick="testGetAgences()">Charger Agences</button>
+<div id="agencesResult" class="result"></div>
+</div>
+
+<div class="section">
+<h2>4. Liste des Produits</h2>
+<button onclick="testGetProducts()">Charger Produits</button>
+<div id="productsResult" class="result"></div>
+</div>
+
+<div class="section">
+<h2>5. Opérations</h2>
+<select id="opAgence">
+<option value="">Toutes les agences</option>
+</select>
+<button onclick="testGetOperations()">Charger Opérations</button>
+<div id="operationsResult" class="result"></div>
+</div>
+
+<div class="section">
+<h2>6. Stocks</h2>
+<select id="stockAgence">
+<option value="">Toutes les agences</option>
+</select>
+<button onclick="testGetStocks()">Charger Stocks</button>
+<div id="stocksResult" class="result"></div>
+</div>
+
+<div class="section">
+<h2>7. Sessions Caisse</h2>
+<input type="email" id="sessionEmail" placeholder="Email caissier (optionnel)">
+<button onclick="testGetSessions()">Charger Sessions</button>
+<div id="sessionsResult" class="result"></div>
+</div>
+
+<div class="section">
+<h2>8. Test Personnalisé</h2>
+<label>Action:</label>
+<select id="customAction">
+<option value="getComptes">getComptes</option>
+<option value="getAgences">getAgences</option>
+<option value="getProducts">getProducts</option>
+<option value="getOperations">getOperations</option>
+<option value="getStocks">getStocks</option>
+<option value="getCommandes">getCommandes</option>
+<option value="getSessions">getSessions</option>
+<option value="getNotificationsLog">getNotificationsLog</option>
+<option value="getParametresAdmin">getParametresAdmin</option>
+</select>
+<label>Données JSON (optionnel):</label>
+<textarea id="customData" rows="4" placeholder='{"agence_id": "AG-001"}'>{}</textarea>
+<button onclick="testCustom()">Exécuter</button>
+<div id="customResult" class="result"></div>
+</div>
+
+<script>
+let apiUrl = '';
+
+function saveConfig() {
+  apiUrl = document.getElementById('apiUrl').value.trim();
+  localStorage.setItem('orchidee_api_url', apiUrl);
+  document.getElementById('configStatus').textContent = '✓ Sauvegardé';
+  document.getElementById('configStatus').className = 'success';
+  setTimeout(() => document.getElementById('configStatus').textContent = '', 2000);
+}
+
+function loadConfig() {
+  const saved = localStorage.getItem('orchidee_api_url');
+  if (saved) {
+    apiUrl = saved;
+    document.getElementById('apiUrl').value = saved;
+  }
+}
+
+async function callAPI(action, data = {}) {
+  if (!apiUrl) {
+    alert('Veuillez configurer l\'URL API');
+    return null;
+  }
+
+  try {
+    const response = await fetch(apiUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action, origin: window.location.origin, ...data })
+    });
+
+    return await response.json();
+  } catch (error) {
+    return { success: false, message: 'Erreur: ' + error.message };
+  }
+}
+
+function displayResult(elementId, result) {
+  const el = document.getElementById(elementId);
+  el.className = 'result ' + (result.success ? 'success' : 'error');
+  el.textContent = JSON.stringify(result, null, 2);
+}
+
+async function testLogin() {
+  const email = document.getElementById('loginEmail').value;
+  const password = document.getElementById('loginPassword').value;
+  const result = await callAPI('login', { email, password });
+  displayResult('loginResult', result);
+}
+
+async function testGetComptes() {
+  const result = await callAPI('getComptes');
+  displayResult('comptesResult', result);
+  
+  if (result.success && result.data.comptes) {
+    let html = '<table><thead><tr><th>Email</th><th>Rôle</th><th>Nom</th><th>Agence</th><th>Statut</th></tr></thead><tbody>';
+    result.data.comptes.forEach(c => {
+      html += `<tr><td>${c.email}</td><td>${c.role}</td><td>${c.nom}</td><td>${c.agence_id}</td><td>${c.statut}</td></tr>`;
+    });
+    html += '</tbody></table>';
+    document.getElementById('comptesTable').innerHTML = html;
+  }
+}
+
+async function testGetAgences() {
+  const result = await callAPI('getAgences');
+  displayResult('agencesResult', result);
+  
+  if (result.success && result.data.agences) {
+    const select1 = document.getElementById('opAgence');
+    const select2 = document.getElementById('stockAgence');
+    select1.innerHTML = '<option value="">Toutes les agences</option>';
+    select2.innerHTML = '<option value="">Toutes les agences</option>';
+    result.data.agences.forEach(a => {
+      select1.innerHTML += `<option value="${a.id}">${a.nom} (${a.id})</option>`;
+      select2.innerHTML += `<option value="${a.id}">${a.nom} (${a.id})</option>`;
+    });
+  }
+}
+
+async function testGetProducts() {
+  const result = await callAPI('getProducts');
+  displayResult('productsResult', result);
+}
+
+async function testGetOperations() {
+  const agence_id = document.getElementById('opAgence').value || null;
+  const result = await callAPI('getOperations', { agence_id });
+  displayResult('operationsResult', result);
+}
+
+async function testGetStocks() {
+  const agence_id = document.getElementById('stockAgence').value || null;
+  const result = await callAPI('getStocks', { agence_id });
+  displayResult('stocksResult', result);
+}
+
+async function testGetSessions() {
+  const caissier_email = document.getElementById('sessionEmail').value.trim() || null;
+  const result = await callAPI('getSessions', { caissier_email });
+  displayResult('sessionsResult', result);
+}
+
+async function testCustom() {
+  const action = document.getElementById('customAction').value;
+  let data = {};
+  try {
+    const dataStr = document.getElementById('customData').value.trim();
+    if (dataStr) data = JSON.parse(dataStr);
+  } catch (e) {
+    alert('JSON invalide: ' + e.message);
+    return;
+  }
+  const result = await callAPI(action, data);
+  displayResult('customResult', result);
+}
+
+loadConfig();
+</script>
+
+</body>
+</html>

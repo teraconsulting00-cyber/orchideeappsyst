@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Caisse - Orchidé Nature</title>
+<link rel="stylesheet" href="css/caisse.css">
+</head>
+<body>
+<div class="caisse-container">
+<header class="header">
+<h1>Point de vente - Caisse</h1>
+<div class="user-info"><span id="caissierName"></span><button type="button" class="btn btn-danger" onclick="handleLogout()">Déconnexion</button></div>
+</header>
+<div class="session-info" id="sessionInfo" style="display:none;">
+<h2>Session ouverte</h2>
+<div class="session-details">
+<div class="session-detail"><label>Fond de caisse</label><div class="value" id="fondCaisse">0 CFA</div></div>
+<div class="session-detail"><label>CA du jour</label><div class="value" id="caJour">0 CFA</div></div>
+<div class="session-detail"><label>Montant attendu</label><div class="value" id="montantAttendu">0 CFA</div></div>
+<div class="session-detail"><label>Durée</label><div class="value" id="dureeSession">00:00:00</div></div>
+</div>
+</div>
+<div id="noSessionView">
+<div class="no-session-card">
+<h2>Aucune session ouverte</h2>
+<button type="button" class="btn btn-success btn-full" onclick="openSessionModal()">Ouvrir une session</button>
+</div>
+</div>
+<div id="sessionView" style="display:none;">
+<div class="main-grid">
+<div class="vente-section">
+<h2>Nouvelle vente</h2>
+<form id="venteForm">
+<div class="form-group"><label>Produit</label><select id="produitVente"></select></div>
+<div class="form-group"><label>Quantité</label><input type="number" id="quantiteVente" min="1" value="1"></div>
+<div class="form-group"><label>Prix unitaire (CFA)</label><input type="number" id="prixVente" readonly step="0.01"></div>
+<div class="form-group"><label>Montant reçu (CFA)</label><input type="number" id="montantRecuVente" step="0.01"></div>
+<div class="rendu-display"><label>Reliquat</label><div class="value" id="renduVente">0 CFA</div></div>
+<button type="submit" class="btn btn-success btn-full">Enregistrer vente</button>
+</form>
+</div>
+<div class="calculator-section">
+<h2>Calculatrice</h2>
+<div class="calc-display" id="calcDisplay">0</div>
+<div class="calculator">
+<button type="button" class="calc-btn" data-val="7">7</button>
+<button type="button" class="calc-btn" data-val="8">8</button>
+<button type="button" class="calc-btn" data-val="9">9</button>
+<button type="button" class="calc-btn operator" data-val="÷">÷</button>
+<button type="button" class="calc-btn" data-val="4">4</button>
+<button type="button" class="calc-btn" data-val="5">5</button>
+<button type="button" class="calc-btn" data-val="6">6</button>
+<button type="button" class="calc-btn operator" data-val="×">×</button>
+<button type="button" class="calc-btn" data-val="1">1</button>
+<button type="button" class="calc-btn" data-val="2">2</button>
+<button type="button" class="calc-btn" data-val="3">3</button>
+<button type="button" class="calc-btn operator" data-val="-">-</button>
+<button type="button" class="calc-btn" data-val="0">0</button>
+<button type="button" class="calc-btn" data-val=".">.</button>
+<button type="button" class="calc-btn equals" id="calcEquals">=</button>
+<button type="button" class="calc-btn operator" data-val="+">+</button>
+<button type="button" class="calc-btn clear" id="calcClear">C</button>
+<button type="button" class="calc-btn clear" id="calcClearAll">AC</button>
+</div>
+</div>
+<div class="mouvements-section">
+<h2>Mouvements</h2>
+<div class="mouvements-list" id="mouvementsList"></div>
+<button type="button" class="btn btn-secondary btn-full" onclick="openMouvementModal('DEPENSE')">Dépense</button>
+<button type="button" class="btn btn-secondary btn-full" onclick="openMouvementModal('APPORT')" style="margin-top:8px;">Apport caisse</button>
+</div>
+</div>
+<div class="session-actions"><button type="button" class="btn btn-danger" onclick="closeSessionModal()">Fermer session</button></div>
+</div>
+</div>
+<div class="modal" id="openSessionModal">
+<div class="modal-content">
+<div class="modal-header"><h2>Ouvrir session</h2><button type="button" class="close-modal" onclick="closeModal('openSessionModal')">&times;</button></div>
+<form id="openSessionForm">
+<div class="form-group"><label>Fond de caisse (CFA) *</label><input type="number" id="fondCaisseInput" required min="0" step="1"></div>
+<div class="form-group"><label>Notes</label><textarea id="notesOuverture" rows="2"></textarea></div>
+<div class="modal-actions"><button type="button" class="btn btn-secondary" onclick="closeModal('openSessionModal')">Annuler</button><button type="submit" class="btn btn-success">Ouvrir</button></div>
+</form>
+</div>
+</div>
+<div class="modal" id="closeSessionModal">
+<div class="modal-content">
+<div class="modal-header"><h2>Fermer session</h2><button type="button" class="close-modal" onclick="closeModal('closeSessionModal')">&times;</button></div>
+<form id="closeSessionForm">
+<div class="form-group"><label>Montant réel en caisse (CFA) *</label><input type="number" id="montantReelInput" required min="0" step="1"></div>
+<div class="form-group"><label>Montant attendu</label><input type="number" id="montantAttenduInput" readonly></div>
+<div class="form-group"><label>Écart (CFA)</label><input type="text" id="ecartDisplay" readonly></div>
+<div class="form-group"><label>Notes</label><textarea id="notesFermeture" rows="2"></textarea></div>
+<div class="modal-actions"><button type="button" class="btn btn-secondary" onclick="closeModal('closeSessionModal')">Annuler</button><button type="submit" class="btn btn-danger">Fermer</button></div>
+</form>
+</div>
+</div>
+<div class="modal" id="mouvementModal">
+<div class="modal-content">
+<div class="modal-header"><h2 id="mouvementModalTitle">Mouvement</h2><button type="button" class="close-modal" onclick="closeModal('mouvementModal')">&times;</button></div>
+<form id="mouvementForm">
+<input type="hidden" id="mouvementType">
+<div class="form-group"><label>Montant (CFA) *</label><input type="number" id="mouvementMontant" required min="0" step="1"></div>
+<div class="form-group"><label>Description *</label><input type="text" id="mouvementDesc" required placeholder="Ex: Fournitures bureau"></div>
+<div class="modal-actions"><button type="button" class="btn btn-secondary" onclick="closeModal('mouvementModal')">Annuler</button><button type="submit" class="btn btn-primary">Enregistrer</button></div>
+</form>
+</div>
+</div>
+<script src="config.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/api.js"></script>
+<script src="js/caisse.js"></script>
+</body>
+</html>
