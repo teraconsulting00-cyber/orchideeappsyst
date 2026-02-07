@@ -84,5 +84,54 @@ class ApiService {
   async sendNotification(data) {
     return await this.request("sendNotification", data);
   }
+  /* --- Gestion stock alimentaire --- */
+  async getMatieresPremieres() {
+    return await this.request("getMatieresPremieres");
+  }
+  async getRecettes() {
+    return await this.request("getRecettes");
+  }
+  async getRecetteByProduit(produit_id) {
+    return await this.request("getRecetteByProduit", { produit_id });
+  }
+  async saveRecette(data) {
+    return await this.request("saveRecette", data);
+  }
+  async getLotsMp(data) {
+    return await this.request("getLotsMp", data || {});
+  }
+  async addLotMp(data) {
+    return await this.request("addLotMp", data);
+  }
+  async declareProduction(data) {
+    return await this.request("declareProduction", data);
+  }
+  async getDeclarationsProduction(data) {
+    return await this.request("getDeclarationsProduction", data || {});
+  }
+  async declareFdj(data) {
+    return await this.request("declareFdj", data);
+  }
+  async getDeclarationsFdj(data) {
+    return await this.request("getDeclarationsFdj", data || {});
+  }
+  async getRapportEcarts(data) {
+    return await this.request("getRapportEcarts", data || {});
+  }
+  async addMouvementPf(data) {
+    return await this.request("addMouvementPf", data);
+  }
+  async getMouvementsPf(data) {
+    return await this.request("getMouvementsPf", data || {});
+  }
+  async getLotsPf(data) {
+    return await this.request("getLotsPf", data || {});
+  }
+  async getAlertesPeremption(data) {
+    return await this.request("getAlertesPeremption", data || {});
+  }
+  async getStocksMpResume(data) {
+    return await this.request("getStocksMpResume", data || {});
+  }
 }
 const apiService = new ApiService();

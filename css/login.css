@@ -2,13 +2,20 @@
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
+html { -webkit-text-size-adjust: 100%; }
+
 body {
   font-family: "Segoe UI", "Helvetica Neue", sans-serif;
   min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 24px;
+  padding: 16px;
+  padding-top: calc(16px + var(--safe-top));
+  padding-bottom: calc(16px + var(--safe-bottom));
+  padding-left: calc(16px + var(--safe-left));
+  padding-right: calc(16px + var(--safe-right));
   background: linear-gradient(145deg, #1a1612 0%, #2c2416 35%, #3d3428 70%, #1a1612 100%);
   background-attachment: fixed;
   position: relative;
@@ -32,9 +39,9 @@ body::before {
 
 .login-card {
   background: var(--bg-card);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius);
   box-shadow: var(--shadow-lg), 0 0 0 1px rgba(201, 162, 39, 0.1);
-  padding: 48px 40px;
+  padding: 28px 20px;
   position: relative;
   overflow: hidden;
 }
@@ -53,22 +60,22 @@ body::before {
   margin-bottom: 36px;
 }
 .logo {
-  width: 88px;
-  height: 88px;
-  margin-bottom: 18px;
+  width: 72px;
+  height: 72px;
+  margin-bottom: 14px;
   object-fit: contain;
   filter: drop-shadow(0 4px 12px rgba(201, 162, 39, 0.2));
 }
 .logo-section h1 {
-  font-size: 26px;
+  font-size: 22px;
   font-weight: 700;
   color: var(--text-primary);
-  margin-bottom: 6px;
+  margin-bottom: 4px;
   letter-spacing: -0.02em;
 }
 .logo-section p {
   color: var(--text-secondary);
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 500;
 }
 
@@ -90,9 +97,10 @@ body::before {
 .form-group input[type="password"] {
   width: 100%;
   padding: 14px 16px;
+  min-height: var(--touch-min);
   border: 2px solid var(--border);
   border-radius: var(--radius-sm);
-  font-size: 15px;
+  font-size: 16px;
   transition: border-color var(--transition), box-shadow var(--transition);
   background: var(--bg-page);
 }
@@ -117,9 +125,12 @@ body::before {
   border: none;
   color: var(--text-muted);
   cursor: pointer;
-  padding: 8px;
+  padding: 10px;
+  min-width: var(--touch-min);
+  min-height: var(--touch-min);
   display: flex;
   align-items: center;
+  justify-content: center;
   transition: color var(--transition);
 }
 .toggle-password:hover {
@@ -145,6 +156,10 @@ body::before {
 .btn-login {
   width: 100%;
   padding: 16px;
+  min-height: var(--touch-min);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background: linear-gradient(135deg, var(--gold-dark) 0%, var(--gold) 50%, var(--gold-light) 100%);
   color: var(--text-on-gold);
   border: none;
@@ -216,11 +231,34 @@ body::before {
   font-weight: 500;
 }
 
-@media (max-width: 480px) {
+@media (min-width: 400px) {
   .login-card {
-    padding: 36px 24px;
+    padding: 32px 24px;
+  }
+  .logo {
+    width: 80px;
+    height: 80px;
   }
   .logo-section h1 {
-    font-size: 22px;
+    font-size: 24px;
+  }
+}
+
+@media (min-width: 720px) {
+  body { padding: 24px; }
+  .login-card {
+    padding: 48px 40px;
+    border-radius: var(--radius-lg);
+  }
+  .logo {
+    width: 88px;
+    height: 88px;
+    margin-bottom: 18px;
+  }
+  .logo-section h1 {
+    font-size: 26px;
+  }
+  .logo-section p {
+    font-size: 14px;
   }
 }

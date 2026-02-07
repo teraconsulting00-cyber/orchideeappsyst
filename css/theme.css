@@ -37,4 +37,13 @@
   --radius-sm: 8px;
   --radius-lg: 16px;
   --transition: 0.25s ease;
+  /* Mobile first */
+  --touch-min: 44px;
+  --safe-top: env(safe-area-inset-top, 0);
+  --safe-right: env(safe-area-inset-right, 0);
+  --safe-bottom: env(safe-area-inset-bottom, 0);
+  --safe-left: env(safe-area-inset-left, 0);
+  --bp-sm: 400px;
+  --bp-md: 720px;
+  --bp-lg: 1024px;
 }

@@ -21,6 +21,7 @@ function getDb() {
       db.pragma("foreign_keys = ON");
       initSchema(db);
       seedIfEmpty(db);
+      seedStockIfEmpty(db);
     } catch (e) {
       console.error("[DB] Erreur init SQLite:", e.message);
       throw e;
@@ -148,6 +149,93 @@ function initSchema(database) {
       ip TEXT,
       success INTEGER DEFAULT 1
     );
+    /* --- GESTION STOCK ALIMENTAIRE (matières premières + recettes + FIFO) --- */
+    CREATE TABLE IF NOT EXISTS matieres_premieres (
+      id TEXT PRIMARY KEY,
+      code TEXT,
+      nom TEXT NOT NULL,
+      unite TEXT NOT NULL DEFAULT 'kg',
+      actif INTEGER DEFAULT 1
+    );
+    CREATE TABLE IF NOT EXISTS recettes (
+      id TEXT PRIMARY KEY,
+      produit_id TEXT NOT NULL REFERENCES produits(id),
+      UNIQUE(produit_id)
+    );
+    CREATE TABLE IF NOT EXISTS recette_ingredients (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      recette_id TEXT NOT NULL REFERENCES recettes(id),
+      matiere_premiere_id TEXT NOT NULL REFERENCES matieres_premieres(id),
+      quantite REAL NOT NULL,
+      unite TEXT NOT NULL,
+      UNIQUE(recette_id, matiere_premiere_id)
+    );
+    CREATE TABLE IF NOT EXISTS lots_mp (
+      id TEXT PRIMARY KEY,
+      matiere_premiere_id TEXT NOT NULL,
+      agence_id TEXT NOT NULL,
+      numero_lot TEXT NOT NULL,
+      date_reception TEXT NOT NULL,
+      date_peremption TEXT NOT NULL,
+      quantite_restante REAL NOT NULL DEFAULT 0,
+      unite TEXT NOT NULL,
+      created_at TEXT
+    );
+    CREATE TABLE IF NOT EXISTS declarations_production (
+      id TEXT PRIMARY KEY,
+      agence_id TEXT NOT NULL,
+      date TEXT NOT NULL,
+      heure TEXT,
+      created_by TEXT,
+      timestamp TEXT,
+      statut TEXT DEFAULT 'VALIDEE'
+    );
+    CREATE TABLE IF NOT EXISTS lignes_production (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      declaration_id TEXT NOT NULL REFERENCES declarations_production(id),
+      produit_id TEXT NOT NULL,
+      quantite REAL NOT NULL
+    );
+    CREATE TABLE IF NOT EXISTS declarations_fdj (
+      id TEXT PRIMARY KEY,
+      agence_id TEXT NOT NULL,
+      date TEXT NOT NULL,
+      heure TEXT,
+      created_by TEXT,
+      timestamp TEXT,
+      statut TEXT DEFAULT 'ENREGISTREE'
+    );
+    CREATE TABLE IF NOT EXISTS lignes_fdj (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      declaration_fdj_id TEXT NOT NULL REFERENCES declarations_fdj(id),
+      matiere_premiere_id TEXT NOT NULL,
+      quantite_theorique REAL NOT NULL DEFAULT 0,
+      quantite_reelle REAL NOT NULL DEFAULT 0,
+      ecart REAL DEFAULT 0
+    );
+    CREATE TABLE IF NOT EXISTS lots_pf (
+      id TEXT PRIMARY KEY,
+      produit_id TEXT NOT NULL,
+      agence_id TEXT NOT NULL,
+      numero_lot TEXT NOT NULL,
+      date_production TEXT NOT NULL,
+      date_peremption TEXT NOT NULL,
+      quantite_restante REAL NOT NULL DEFAULT 0,
+      created_at TEXT
+    );
+    CREATE TABLE IF NOT EXISTS mouvements_pf (
+      id TEXT PRIMARY KEY,
+      agence_id TEXT NOT NULL,
+      produit_id TEXT NOT NULL,
+      type TEXT NOT NULL,
+      quantite REAL NOT NULL,
+      lot_id TEXT,
+      date TEXT NOT NULL,
+      heure TEXT,
+      created_by TEXT,
+      notes TEXT,
+      timestamp TEXT
+    );
   `);
 }
 
@@ -198,7 +286,77 @@ function seedIfEmpty(database) {
     "INSERT INTO parametres_admin (key, value) VALUES (?, ?)"
   ).run("whatsapp_number", "");
 
+  /* Comptes Cuisine et Gestionnaire Stock */
+  database.prepare(
+    "INSERT INTO comptes (email, password, role, nom, agence_id, statut) VALUES (?, ?, ?, ?, ?, ?)"
+  ).run("cuisine@orchidenature.com", "cuisine1", "cuisine", "Cuisine", "AG1", "ACTIF");
+  database.prepare(
+    "INSERT INTO comptes (email, password, role, nom, agence_id, statut) VALUES (?, ?, ?, ?, ?, ?)"
+  ).run("stock@orchidenature.com", "stock1", "gestionnaire_stock", "Gestionnaire Stock", "AG1", "ACTIF");
+
+  /* Matières premières exemple */
+  const mpExemples = [
+    { id: "MP-FARINE", code: "FAR", nom: "Farine", unite: "kg" },
+    { id: "MP-SUCRE", code: "SUC", nom: "Sucre", unite: "kg" },
+    { id: "MP-BEURRE", code: "BEU", nom: "Beurre", unite: "kg" },
+    { id: "MP-OEUF", code: "OEU", nom: "Œufs", unite: "unite" },
+    { id: "MP-LAIT", code: "LAI", nom: "Lait", unite: "L" },
+    { id: "MP-LEVURE", code: "LEV", nom: "Levure", unite: "kg" },
+  ];
+  const stmtMp = database.prepare("INSERT INTO matieres_premieres (id, code, nom, unite) VALUES (?, ?, ?, ?)");
+  for (const m of mpExemples) stmtMp.run(m.id, m.code, m.nom, m.unite);
+
+  /* Recette exemple pour Produit Démo */
+  database.prepare("INSERT INTO recettes (id, produit_id) VALUES (?, ?)").run("REC-001", "PRD-001");
+  database.prepare("INSERT INTO recette_ingredients (recette_id, matiere_premiere_id, quantite, unite) VALUES (?, ?, ?, ?)")
+    .run("REC-001", "MP-FARINE", 0.5, "kg");
+  database.prepare("INSERT INTO recette_ingredients (recette_id, matiere_premiere_id, quantite, unite) VALUES (?, ?, ?, ?)")
+    .run("REC-001", "MP-SUCRE", 0.2, "kg");
+  database.prepare("INSERT INTO recette_ingredients (recette_id, matiere_premiere_id, quantite, unite) VALUES (?, ?, ?, ?)")
+    .run("REC-001", "MP-OEUF", 2, "unite");
+
+  /* Stock initial matières premières (lots) pour AG1 */
+  const jr = now.split("T")[0];
+  const peremp = new Date();
+  peremp.setDate(peremp.getDate() + 90);
+  const perempStr = peremp.toISOString().split("T")[0];
+  database.prepare(
+    "INSERT INTO lots_mp (id, matiere_premiere_id, agence_id, numero_lot, date_reception, date_peremption, quantite_restante, unite, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
+  ).run("LOT-MP-001", "MP-FARINE", "AG1", "LOT-FAR-001", jr, perempStr, 100, "kg", now);
+  database.prepare(
+    "INSERT INTO lots_mp (id, matiere_premiere_id, agence_id, numero_lot, date_reception, date_peremption, quantite_restante, unite, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
+  ).run("LOT-MP-002", "MP-SUCRE", "AG1", "LOT-SUC-001", jr, perempStr, 50, "kg", now);
+  database.prepare(
+    "INSERT INTO lots_mp (id, matiere_premiere_id, agence_id, numero_lot, date_reception, date_peremption, quantite_restante, unite, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
+  ).run("LOT-MP-003", "MP-OEUF", "AG1", "LOT-OEU-001", jr, perempStr, 500, "unite", now);
+
   console.log("[DB] Données initiales (seed) insérées.");
+}
+
+function seedStockIfEmpty(database) {
+  const count = database.prepare("SELECT COUNT(*) as n FROM matieres_premieres").get();
+  if (count.n > 0) return;
+  const mpExemples = [
+    { id: "MP-FARINE", code: "FAR", nom: "Farine", unite: "kg" },
+    { id: "MP-SUCRE", code: "SUC", nom: "Sucre", unite: "kg" },
+    { id: "MP-BEURRE", code: "BEU", nom: "Beurre", unite: "kg" },
+    { id: "MP-OEUF", code: "OEU", nom: "Œufs", unite: "unite" },
+    { id: "MP-LAIT", code: "LAI", nom: "Lait", unite: "L" },
+    { id: "MP-LEVURE", code: "LEV", nom: "Levure", unite: "kg" },
+  ];
+  const stmt = database.prepare("INSERT INTO matieres_premieres (id, code, nom, unite) VALUES (?, ?, ?, ?)");
+  for (const m of mpExemples) {
+    try { stmt.run(m.id, m.code, m.nom, m.unite); } catch (e) { /* ignore dup */ }
+  }
+  try {
+    database.prepare("INSERT INTO comptes (email, password, role, nom, agence_id, statut) VALUES (?, ?, ?, ?, ?, ?)")
+      .run("cuisine@orchidenature.com", "cuisine1", "cuisine", "Cuisine", "AG1", "ACTIF");
+  } catch (e) { /* ignore dup */ }
+  try {
+    database.prepare("INSERT INTO comptes (email, password, role, nom, agence_id, statut) VALUES (?, ?, ?, ?, ?, ?)")
+      .run("stock@orchidenature.com", "stock1", "gestionnaire_stock", "Gestionnaire Stock", "AG1", "ACTIF");
+  } catch (e) { /* ignore dup */ }
+  console.log("[DB] Données stock (matières premières, comptes) initialisées.");
 }
 
 /** Agence RAMCO + produits FICHE DE FACTURATION */
@@ -278,7 +436,10 @@ function exportBackup() {
   const tables = [
     "comptes", "agences", "produits", "operations", "stocks",
     "commandes", "lignes_commandes", "sessions_caisse", "mouvements_caisse",
-    "notifications_log", "contacts_notifications", "parametres_admin", "auth_logs"
+    "notifications_log", "contacts_notifications", "parametres_admin", "auth_logs",
+    "matieres_premieres", "recettes", "recette_ingredients", "lots_mp",
+    "declarations_production", "lignes_production", "declarations_fdj", "lignes_fdj",
+    "lots_pf", "mouvements_pf"
   ];
   const out = { version: 1, exportedAt: new Date().toISOString(), data: {} };
   for (const table of tables) {

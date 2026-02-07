@@ -23,7 +23,9 @@ const CONFIG = {
   roles: {
     ADMIN: "admin",
     AGENCY: "agency",
-    CAISSIER: "caissier"
+    CAISSIER: "caissier",
+    CUISINE: "cuisine",
+    GESTIONNAIRE_STOCK: "gestionnaire_stock"
   },
   operations: {
     types: {

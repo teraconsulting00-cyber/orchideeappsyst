@@ -97,12 +97,7 @@ Les mots de passe sont stockés en clair dans la feuille (pour la démo). En pro
 
 ## Test
 
-1. Aller sur `http://localhost:8000` (ou l’URL de votre déploiement).
-2. Se connecter avec un des comptes de la feuille **Comptes** :
-   - Admin : `admin@orchidenature.com` / `admin123` → accès à l’interface Admin.
-   - Agence : `agence@orchidenature.com` / `agence123` → interface Agence (opérations, stocks, commandes).
-   - Caissier : `caissier@orchidenature.com` / `caisse123` → interface Caisse (session, ventes, mouvements, calculatrice).
-3. Vérifier que les opérations, stocks et commandes s’affichent et se mettent à jour ; les données sont lues et écrites dans le Google Sheet.
+IUGIUKJ
 
 ## Dépannage
 

@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Gestion Production & Stock - Orchidé Nature</title>
+  <link rel="stylesheet" href="css/theme.css">
+  <link rel="stylesheet" href="css/production.css">
+  <link rel="stylesheet" href="css/reports.css">
+</head>
+<body>
+<div class="prod-container" id="prodContainer">
+  <button type="button" class="menu-toggle" id="menuToggle" aria-label="Ouvrir le menu">
+    <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+  </button>
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+  <aside class="sidebar">
+    <div class="logo-wrap">
+      <img src="images/logo.png" alt="Orchidé Nature" class="logo-img">
+      <div>
+        <span class="logo-title">PRODUCTION</span>
+        <span class="logo-sub">Gestion Stock Alimentaire</span>
+      </div>
+    </div>
+    <nav class="menu">
+      <button type="button" class="menu-item active" data-view="accueil">
+        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+        <span>Accueil</span>
+      </button>
+      <button type="button" class="menu-item" data-view="production">
+        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+        <span>Déclaration production</span>
+      </button>
+      <button type="button" class="menu-item" data-view="fdj">
+        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+        <span>Fin de journée</span>
+      </button>
+      <button type="button" class="menu-item" data-view="mouvements">
+        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
+        <span>Mouvements PF</span>
+      </button>
+      <button type="button" class="menu-item" data-view="stocks">
+        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+        <span>État des stocks</span>
+      </button>
+      <button type="button" class="menu-item" data-view="recettes">
+        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+        <span>Recettes</span>
+      </button>
+      <button type="button" class="menu-item" data-view="alertes">
+        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 00-6-6 6 6 0 00-6 6v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+        <span>Alertes péremption</span>
+      </button>
+      <button type="button" class="menu-item" data-view="rapport-ecarts">
+        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.5a2 2 0 012 2v11a2 2 0 01-2 2z"/></svg>
+        <span>Rapport écarts</span>
+      </button>
+    </nav>
+    <div class="sidebar-footer">
+      <a href="app.html" class="link-app">← Retour Agence</a>
+      <button type="button" class="logout-btn" onclick="handleLogout()">Déconnexion</button>
+    </div>
+  </aside>
+  <main class="main-content">
+    <header class="header">
+      <div class="header-title">
+        <h1 id="pageTitle">Gestion Production & Stock</h1>
+        <p id="pageSubtitle">Agence <span id="agenceLabel">—</span></p>
+      </div>
+      <div class="user-info">
+        <span id="userName"></span>
+      </div>
+    </header>
+    <div id="viewContent" class="view-content"></div>
+  </main>
+</div>
+
+<!-- Modals -->
+<div class="modal" id="modalProduction">
+  <div class="modal-content modal-lg">
+    <div class="modal-header">
+      <h2>Déclarer une production</h2>
+      <button type="button" class="close-modal" onclick="closeModal('modalProduction')">&times;</button>
+    </div>
+    <form id="formProduction">
+      <div class="form-group">
+        <label>Produit *</label>
+        <select id="prodProduit" required></select>
+      </div>
+      <div class="form-group">
+        <label>Quantité produite *</label>
+        <input type="number" id="prodQuantite" min="1" step="1" required placeholder="Ex: 5">
+      </div>
+      <div class="recette-preview" id="recettePreview"></div>
+      <div class="lignes-dynamiques" id="lignesProduction"></div>
+      <button type="button" class="btn btn-secondary" id="btnAddLigneProd">+ Ajouter un produit</button>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-secondary" onclick="closeModal('modalProduction')">Annuler</button>
+        <button type="submit" class="btn btn-primary">Valider la production</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="modal" id="modalFdj">
+  <div class="modal-content modal-lg">
+    <div class="modal-header">
+      <h2>Fin de journée — Quantités réelles</h2>
+      <button type="button" class="close-modal" onclick="closeModal('modalFdj')">&times;</button>
+    </div>
+    <form id="formFdj">
+      <div class="form-group">
+        <label>Date</label>
+        <input type="date" id="fdjDate" required>
+      </div>
+      <p class="muted">Saisissez les quantités réellement utilisées par matière première. Les quantités théoriques sont pré-remplies depuis les déclarations de production du jour.</p>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead><tr><th>Matière première</th><th>Théorique</th><th>Réel *</th><th>Écart</th></tr></thead>
+          <tbody id="fdjLignes"></tbody>
+        </table>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-secondary" onclick="closeModal('modalFdj')">Annuler</button>
+        <button type="submit" class="btn btn-primary">Enregistrer FDJ</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="modal" id="modalMouvement">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>Enregistrer un mouvement PF</h2>
+      <button type="button" class="close-modal" onclick="closeModal('modalMouvement')">&times;</button>
+    </div>
+    <form id="formMouvement">
+      <div class="form-group">
+        <label>Type *</label>
+        <select id="mvtType" required>
+          <option value="REMISE_VENTE">Remise pour vente</option>
+          <option value="INVENDU">Invendu</option>
+          <option value="RETOUR">Retour</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Produit *</label>
+        <select id="mvtProduit" required></select>
+      </div>
+      <div class="form-group">
+        <label>Quantité *</label>
+        <input type="number" id="mvtQuantite" min="1" step="1" required>
+      </div>
+      <div class="form-group">
+        <label>Notes</label>
+        <input type="text" id="mvtNotes" placeholder="Optionnel">
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-secondary" onclick="closeModal('modalMouvement')">Annuler</button>
+        <button type="submit" class="btn btn-primary">Enregistrer</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="modal" id="modalRecette">
+  <div class="modal-content modal-lg">
+    <div class="modal-header">
+      <h2>Configurer la recette</h2>
+      <button type="button" class="close-modal" onclick="closeModal('modalRecette')">&times;</button>
+    </div>
+    <form id="formRecette">
+      <div class="form-group">
+        <label>Produit *</label>
+        <select id="recetteProduit" required></select>
+      </div>
+      <div id="recetteIngredients"></div>
+      <button type="button" class="btn btn-secondary" id="btnAddIngredient">+ Ajouter ingrédient</button>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-secondary" onclick="closeModal('modalRecette')">Annuler</button>
+        <button type="submit" class="btn btn-primary">Enregistrer la recette</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="modal" id="modalLotMp">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>Nouveau lot (matière première)</h2>
+      <button type="button" class="close-modal" onclick="closeModal('modalLotMp')">&times;</button>
+    </div>
+    <form id="formLotMp">
+      <div class="form-group">
+        <label>Matière première *</label>
+        <select id="lotMpMatiere" required></select>
+      </div>
+      <div class="form-group">
+        <label>Numéro de lot</label>
+        <input type="text" id="lotMpNumero" placeholder="Ex: LOT-FAR-2026-001">
+      </div>
+      <div class="form-group">
+        <label>Quantité *</label>
+        <input type="number" id="lotMpQuantite" min="0.001" step="0.01" required>
+      </div>
+      <div class="form-group">
+        <label>Date réception *</label>
+        <input type="date" id="lotMpDateReception" required>
+      </div>
+      <div class="form-group">
+        <label>Date péremption *</label>
+        <input type="date" id="lotMpDatePeremption" required>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-secondary" onclick="closeModal('modalLotMp')">Annuler</button>
+        <button type="submit" class="btn btn-primary">Ajouter le lot</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script src="config.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/api.js"></script>
+<script src="js/reports.js"></script>
+<script src="js/production.js"></script>
+<script>
+(function(){
+  var c = document.getElementById("prodContainer");
+  var t = document.getElementById("menuToggle");
+  var o = document.getElementById("sidebarOverlay");
+  if (t) t.addEventListener("click", function(){ c && c.classList.toggle("menu-open"); });
+  if (o) o.addEventListener("click", function(){ c && c.classList.remove("menu-open"); });
+})();
+</script>
+</body>
+</html>

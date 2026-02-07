@@ -2,14 +2,18 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Admin - Orchidé Nature</title>
 <link rel="stylesheet" href="css/admin.css">
+<link rel="stylesheet" href="css/reports.css">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
 <body>
-<div class="admin-container">
-<div class="sidebar">
+<div class="admin-container" id="adminContainer">
+<button type="button" class="menu-toggle" id="menuToggle" aria-label="Ouvrir le menu"><svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+<div class="sidebar-overlay" id="sidebarOverlay" aria-hidden="true"></div>
+<div class="sidebar" id="sidebar">
 <div class="logo-wrap"><img src="images/logo.png" alt="Orchidé Nature" class="logo-img"><span>ORCHIDÉ NATURE</span></div>
 <nav class="menu">
 <a class="menu-item active" data-section="dashboard"><svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg><span>Dashboard</span></a>
@@ -17,11 +21,12 @@
 <a class="menu-item" data-section="stocks"><svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg><span>Stocks</span></a>
 <a class="menu-item" data-section="notifications"><svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 00-6-6 6 6 0 00-6 6v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg><span>Notifications</span></a>
 <a class="menu-item" data-section="parametres"><svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 2.31 1.04 1.37 2.573a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-1.04 2.31-2.573 1.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-2.31-1.04-1.37-2.573a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543 1.04-2.31 2.573-1.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg><span>Paramètres</span></a>
+<a href="production.html" class="menu-item"><svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg><span>Production & Stock</span></a>
 </nav>
 </div>
 <div class="main-content">
 <header class="header">
-<div><h1>Administration</h1><p id="headerSubtitle">Toutes les agences</p></div>
+<div class="header-title"><h1>Administration</h1><p id="headerSubtitle">Toutes les agences</p></div>
 <div class="user-info"><span id="userName"></span><button type="button" class="logout-btn" onclick="handleLogout()">Déconnexion</button></div>
 </header>
 <div class="filters" id="filtersBar">
@@ -40,7 +45,15 @@
 <div class="card"><h2>Performance par agence</h2><div class="chart-container"><canvas id="agencesChart"></canvas></div></div>
 </section>
 <section id="section-rapports" class="content-section hidden">
-<div class="card"><h2>Rapports d'activité</h2><p class="muted">Rapports globaux ou par agence.</p><button type="button" class="btn btn-primary" id="btnExportRapport">Exporter rapport (période)</button></div>
+<div class="card">
+  <h2>Rapports d'activité</h2>
+  <p class="muted">Rapports globaux ou par agence. Utilisez les filtres puis générez le rapport stylisé en PDF.</p>
+  <div class="report-actions">
+    <button type="button" class="btn btn-primary" id="btnExportRapport">Générer le rapport</button>
+    <button type="button" class="btn btn-primary" id="btnExportPdf" style="display:none">Exporter en PDF</button>
+  </div>
+  <div class="report-preview-wrap" id="rapportPreview"></div>
+</div>
 </section>
 <section id="section-stocks" class="content-section hidden">
 <div class="card"><h2>Stocks par agence</h2><div class="table-wrap"><table class="data-table" id="stocksTable"><thead><tr><th>Agence</th><th>Produit</th><th>Quantité</th></tr></thead><tbody></tbody></table></div></div>
@@ -56,6 +69,16 @@
 <script src="config.js"></script>
 <script src="js/auth.js"></script>
 <script src="js/api.js"></script>
+<script src="js/reports.js"></script>
 <script src="js/admin.js"></script>
+<script>
+(function(){
+  var c = document.getElementById('adminContainer');
+  var t = document.getElementById('menuToggle');
+  var o = document.getElementById('sidebarOverlay');
+  if (t) t.addEventListener('click', function(){ c && c.classList.toggle('menu-open'); });
+  if (o) o.addEventListener('click', function(){ c && c.classList.remove('menu-open'); });
+})();
+</script>
 </body>
 </html>

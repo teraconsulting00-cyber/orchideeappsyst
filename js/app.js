@@ -23,6 +23,7 @@ async function init() {
       if (section === "operations") showOperations();
       if (section === "stocks") showStocks();
       if (section === "commandes") showCommandes();
+      document.getElementById("appContainer") && document.getElementById("appContainer").classList.remove("menu-open");
     });
   });
   document.getElementById("operationForm").addEventListener("submit", submitOperation);

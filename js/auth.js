@@ -127,6 +127,9 @@ class AuthService {
         return "app.html";
       case CONFIG.roles.CAISSIER:
         return "caisse.html";
+      case CONFIG.roles.CUISINE:
+      case CONFIG.roles.GESTIONNAIRE_STOCK:
+        return "production.html";
       default:
         return "index.html";
     }

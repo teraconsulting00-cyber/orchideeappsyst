@@ -3,6 +3,7 @@ let agences = [];
 let allOperations = [];
 let allCommandes = [];
 let allStocks = [];
+let allProducts = [];
 let caChartInstance = null;
 let agencesChartInstance = null;
 
@@ -51,10 +52,12 @@ async function init() {
       if (el.dataset.section === "stocks") loadStocks();
       if (el.dataset.section === "notifications") loadNotifications();
       if (el.dataset.section === "parametres") loadParametres();
+      document.getElementById("adminContainer") && document.getElementById("adminContainer").classList.remove("menu-open");
     });
   });
   document.getElementById("btnApplyFilters").addEventListener("click", applyFilters);
-  document.getElementById("btnExportRapport").addEventListener("click", exportRapport);
+  document.getElementById("btnExportRapport").addEventListener("click", buildAndShowRapport);
+  document.getElementById("btnExportPdf").addEventListener("click", exportRapportPdf);
   document.getElementById("parametresForm").addEventListener("submit", saveParametres);
   await loadDashboard();
 }
@@ -69,8 +72,10 @@ async function loadDashboard() {
   const range = getDateRange(periode);
   const opsRes = await apiService.getOperations(agenceId, range.debut, range.fin);
   const cmdRes = await apiService.getCommandes(agenceId);
+  const prodRes = await apiService.getProducts();
   if (opsRes.success) allOperations = opsRes.data.operations || [];
   if (cmdRes.success) allCommandes = cmdRes.data.commandes || [];
+  if (prodRes.success && prodRes.data?.products) allProducts = prodRes.data.products;
   const ventes = allOperations.filter((o) => o.type === "VENTE");
   const caTotal = ventes.reduce((s, v) => s + (parseFloat(v.montant_total) || 0), 0);
   document.getElementById("caTotal").textContent = formatCurrency(caTotal);
@@ -176,20 +181,58 @@ async function saveParametres(e) {
   alert("Paramètres enregistrés.");
 }
 
-function exportRapport() {
+function getProduitNom(id) {
+  const p = allProducts.find((x) => x.id === id);
+  return p ? p.nom : id;
+}
+
+function buildAndShowRapport() {
   const agenceId = document.getElementById("agenceFilter").value || null;
   const periode = document.getElementById("periodeFilter").value;
   const range = getDateRange(periode);
-  const lines = ["Date;Type;Agence;Produit;Quantité;Prix;Montant"];
-  allOperations.forEach((o) => {
-    lines.push([o.date, o.type, o.agence_id, o.produit_id, o.quantite, o.prix_unitaire, o.montant_total].join(";"));
-  });
-  const blob = new Blob([lines.join("\n")], { type: "text/csv;charset=utf-8" });
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = "rapport_" + (agenceId || "global") + "_" + range.debut + ".csv";
-  a.click();
-  URL.revokeObjectURL(a.href);
+  const ventes = allOperations.filter((o) => o.type === "VENTE");
+  const caTotal = ventes.reduce((s, v) => s + (parseFloat(v.montant_total) || 0), 0);
+  const periodeLabel = periode === "jour" ? "Aujourd'hui" : periode === "semaine" ? "Cette semaine" : "Ce mois";
+  const agence = agenceId ? (agences.find((a) => a.id === agenceId)?.nom || agenceId) : "Toutes les agences";
+
+  const statsHtml = `
+    <div class="report-stats">
+      <div class="report-stat"><div class="label">CA Total</div><div class="value">${formatCurrency(caTotal)}</div></div>
+      <div class="report-stat"><div class="label">Opérations</div><div class="value">${allOperations.length}</div></div>
+      <div class="report-stat"><div class="label">Ventes</div><div class="value">${ventes.length}</div></div>
+    </div>
+  `;
+  const tableRows = allOperations.slice(0, 500).map((o) => {
+    const nom = getProduitNom(o.produit_id);
+    return `<tr><td>${o.date || ""}</td><td>${o.heure || ""}</td><td>${o.type}</td><td>${o.agence_id || ""}</td><td>${nom}</td><td>${o.quantite}</td><td>${formatCurrency(o.prix_unitaire)}</td><td>${formatCurrency(o.montant_total)}</td></tr>`;
+  }).join("");
+  const tableHtml = `
+    <table class="report-table">
+      <thead><tr><th>Date</th><th>Heure</th><th>Type</th><th>Agence</th><th>Produit</th><th>Qté</th><th>Prix unit.</th><th>Montant</th></tr></thead>
+      <tbody>${tableRows || "<tr><td colspan='8'>Aucune opération</td></tr>"}</tbody>
+    </table>
+  `;
+
+  const meta = {
+    period: `${periodeLabel} (${range.debut} → ${range.fin})`,
+    agence: agence,
+    date: new Date().toLocaleDateString("fr-FR", { day: "2-digit", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit" })
+  };
+  const html = ReportUtils.wrapDocument(meta, statsHtml + tableHtml, "Rapport d'activité");
+  const preview = document.getElementById("rapportPreview");
+  preview.innerHTML = html;
+  document.getElementById("btnExportPdf").style.display = "inline-flex";
+}
+
+async function exportRapportPdf() {
+  const el = document.querySelector("#rapportPreview .report-document");
+  if (!el) {
+    alert("Générez d'abord le rapport.");
+    return;
+  }
+  const agenceId = document.getElementById("agenceFilter").value || "global";
+  const range = getDateRange(document.getElementById("periodeFilter").value);
+  await ReportUtils.exportToPdf(el, "rapport_activite_" + agenceId + "_" + range.debut);
 }
 
 function handleLogout() {
