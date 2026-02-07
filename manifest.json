@@ -1,0 +1,23 @@
+{
+  "name": "Orchidé Nature",
+  "short_name": "Orchidé Nature",
+  "description": "Système de Gestion Multi-Agences",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#1a1612",
+  "theme_color": "#c9a227",
+  "icons": [
+    {
+      "src": "images/logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "images/logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
