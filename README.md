@@ -1,4 +1,4 @@
-# Orchidé Nature Management System
+# Orchidée Nature Management System
 
 Système de gestion multi-agences (opérations, stocks, commandes, caisse). Données stockées dans Google Sheets via Apps Script. Devise : CFA.
 
@@ -7,7 +7,7 @@ Système de gestion multi-agences (opérations, stocks, commandes, caisse). Donn
 ### 1. Créer le classeur
 
 1. Allez sur [Google Drive](https://drive.google.com) et créez un nouveau **Google Sheets** (Tableur).
-2. Donnez-lui un nom (ex. : `Orchidé Nature - Données`).
+2. Donnez-lui un nom (ex. : `Orchidée Nature - Données`).
 
 ### 2. Créer les feuilles (onglets)
 
@@ -65,7 +65,7 @@ Les mots de passe sont stockés en clair dans la feuille (pour la démo). En pro
    `var SPREADSHEET_ID = '1ZCUtA3Sg4fLBahjkQO5CkuthtFiZzJdq7bpChy6fOTA';`
 
 3. Supprimez tout le code par défaut, puis copiez-collez le contenu du fichier `google-sheets/Code.gs` du projet.
-4. Enregistrez (Ctrl+S) et donnez un nom au projet (ex. : `Orchidé Nature API`).
+4. Enregistrez (Ctrl+S) et donnez un nom au projet (ex. : `Orchidée Nature API`).
 
 ### 6. Déployer le script en tant qu’application web
 

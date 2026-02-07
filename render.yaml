@@ -1,4 +1,4 @@
-# Render.com - Configuration Orchidé Nature
+# Render.com - Configuration Orchidée Nature
 services:
   - type: web
     name: orchidee-nature

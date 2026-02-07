@@ -1,5 +1,5 @@
 /**
- * Serveur Orchidé Nature - API locale SQLite + backup
+ * Serveur Orchidée Nature - API locale SQLite + backup
  * Résout CORS et remplace Google Apps Script
  */
 const path = require("path");
@@ -680,7 +680,7 @@ if (process.argv[2] === "backup") {
 }
 
 app.listen(PORT, () => {
-  console.log("Orchidé Nature – API locale: http://localhost:" + PORT);
+  console.log("Orchidée Nature – API locale: http://localhost:" + PORT);
   console.log("  Login: http://localhost:" + PORT + "/index.html");
   console.log("  Backup JSON: GET /api/backup?format=json");
   console.log("  Backup DB:   GET /api/backup?format=db");

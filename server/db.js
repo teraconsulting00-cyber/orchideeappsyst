@@ -1,5 +1,5 @@
 /**
- * Module SQLite pour Orchidé Nature
+ * Module SQLite pour Orchidée Nature
  * Base de données locale + backup
  */
 const path = require("path");

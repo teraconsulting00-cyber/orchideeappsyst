@@ -1,5 +1,5 @@
 /**
- * Orchidé Nature - Utilitaires rapports (logo, styles, export PDF)
+ * Orchidée Nature - Utilitaires rapports (logo, styles, export PDF)
  */
 const ReportUtils = {
   get logoUrl() {
@@ -15,9 +15,9 @@ const ReportUtils = {
     const date = meta.date || new Date().toLocaleDateString("fr-FR", { day: "2-digit", month: "long", year: "numeric" });
     return `
       <div class="report-header">
-        <img src="${this.logoUrl}" alt="Orchidé Nature" class="logo" crossorigin="anonymous">
+        <img src="${this.logoUrl}" alt="Orchidée Nature" class="logo" crossorigin="anonymous">
         <div class="brand">
-          <h1>${(typeof CONFIG !== "undefined" && CONFIG.app) ? CONFIG.app.title : "Orchidé Nature"}</h1>
+          <h1>${(typeof CONFIG !== "undefined" && CONFIG.app) ? CONFIG.app.title : "Orchidée Nature"}</h1>
           <p>${(typeof CONFIG !== "undefined" && CONFIG.app) ? CONFIG.app.tagline : "Système de Gestion Multi-Agences"}</p>
         </div>
       </div>
@@ -32,7 +32,7 @@ const ReportUtils = {
   buildFooter() {
     return `
       <div class="report-footer">
-        © ${new Date().getFullYear()} ${(typeof CONFIG !== "undefined" && CONFIG.app) ? CONFIG.app.title : "Orchidé Nature"} — Document généré automatiquement
+        © ${new Date().getFullYear()} ${(typeof CONFIG !== "undefined" && CONFIG.app) ? CONFIG.app.title : "Orchidée Nature"} — Document généré automatiquement
       </div>
     `;
   },

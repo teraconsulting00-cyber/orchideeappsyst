@@ -1,5 +1,5 @@
 /**
- * Gestion Production & Stock Alimentaire - Orchidé Nature
+ * Gestion Production & Stock Alimentaire - Orchidée Nature
  */
 
 const ALLOWED_ROLES = [CONFIG.roles.CUISINE, CONFIG.roles.GESTIONNAIRE_STOCK, CONFIG.roles.ADMIN, CONFIG.roles.AGENCY];
