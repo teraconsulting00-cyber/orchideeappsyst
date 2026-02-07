@@ -20,10 +20,10 @@ body {
 .caisse-container {
   max-width: 1440px;
   margin: 0 auto;
-  padding: 16px;
-  padding-left: calc(16px + var(--safe-left));
-  padding-right: calc(16px + var(--safe-right));
-  padding-bottom: calc(16px + var(--safe-bottom));
+  padding: 12px;
+  padding-left: calc(12px + var(--safe-left));
+  padding-right: calc(12px + var(--safe-right));
+  padding-bottom: calc(12px + var(--safe-bottom));
 }
 
 /* Header */
@@ -45,7 +45,7 @@ body {
   border-bottom: 3px solid var(--gold);
 }
 .header h1 {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 700;
   letter-spacing: -0.02em;
   line-height: 1.3;
@@ -461,8 +461,34 @@ body {
   color: var(--gold);
 }
 
+/* < 360px */
+@media (max-width: 359px) {
+  .caisse-container { padding: 10px; }
+  .header { padding: 12px; padding-top: calc(12px + var(--safe-top)); }
+  .header h1 { font-size: 14px; }
+  .session-info { padding: 12px; }
+  .session-info h2 { font-size: 14px; }
+  .session-details { grid-template-columns: 1fr; gap: 8px; }
+  .session-detail { padding: 10px; }
+  .session-detail .value { font-size: 18px; }
+  .no-session-card { padding: 24px 16px; }
+  .vente-section, .calculator-section, .mouvements-section { padding: 12px; }
+  .vente-section h2, .calculator-section h2, .mouvements-section h2 { font-size: 14px; }
+  .calc-display { font-size: 24px; padding: 14px; }
+  .calc-btn { padding: 12px; font-size: 16px; min-height: 48px; }
+  .calculator { gap: 8px; }
+  .rendu-display .value { font-size: 26px; }
+  .rendu-display { padding: 14px; }
+  .modal-content { padding: 16px; max-height: calc(100dvh - 24px); }
+}
+
+@media (min-width: 360px) {
+  .header h1 { font-size: 17px; }
+}
+
 /* ≥ 400px */
 @media (min-width: 400px) {
+  .caisse-container { padding: 14px; }
   .session-details {
     grid-template-columns: repeat(2, 1fr);
   }

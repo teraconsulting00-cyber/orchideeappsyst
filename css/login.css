@@ -11,11 +11,11 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 16px;
-  padding-top: calc(16px + var(--safe-top));
-  padding-bottom: calc(16px + var(--safe-bottom));
-  padding-left: calc(16px + var(--safe-left));
-  padding-right: calc(16px + var(--safe-right));
+  padding: 12px;
+  padding-top: calc(12px + var(--safe-top));
+  padding-bottom: calc(12px + var(--safe-bottom));
+  padding-left: calc(12px + var(--safe-left));
+  padding-right: calc(12px + var(--safe-right));
   background: linear-gradient(145deg, #1a1612 0%, #2c2416 35%, #3d3428 70%, #1a1612 100%);
   background-attachment: fixed;
   position: relative;
@@ -41,7 +41,7 @@ body::before {
   background: var(--bg-card);
   border-radius: var(--radius);
   box-shadow: var(--shadow-lg), 0 0 0 1px rgba(201, 162, 39, 0.1);
-  padding: 28px 20px;
+  padding: 20px 16px;
   position: relative;
   overflow: hidden;
 }
@@ -57,17 +57,17 @@ body::before {
 
 .logo-section {
   text-align: center;
-  margin-bottom: 36px;
+  margin-bottom: 24px;
 }
 .logo {
-  width: 72px;
-  height: 72px;
-  margin-bottom: 14px;
+  width: 60px;
+  height: 60px;
+  margin-bottom: 10px;
   object-fit: contain;
   filter: drop-shadow(0 4px 12px rgba(201, 162, 39, 0.2));
 }
 .logo-section h1 {
-  font-size: 22px;
+  font-size: 18px;
   font-weight: 700;
   color: var(--text-primary);
   margin-bottom: 4px;
@@ -75,16 +75,16 @@ body::before {
 }
 .logo-section p {
   color: var(--text-secondary);
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 500;
 }
 
 .login-form {
-  margin-top: 28px;
+  margin-top: 20px;
 }
 
 .form-group {
-  margin-bottom: 22px;
+  margin-bottom: 18px;
 }
 .form-group label {
   display: block;
@@ -246,7 +246,30 @@ body::before {
   font-weight: 500;
 }
 
+/* < 360px */
+@media (max-width: 359px) {
+  body { padding: 10px; padding-top: calc(10px + var(--safe-top)); padding-bottom: calc(10px + var(--safe-bottom)); }
+  .login-card { padding: 16px 12px; }
+  .logo { width: 52px; height: 52px; margin-bottom: 8px; }
+  .logo-section { margin-bottom: 20px; }
+  .logo-section h1 { font-size: 16px; }
+  .logo-section p { font-size: 11px; }
+  .form-group { margin-bottom: 16px; }
+  .form-group label { font-size: 13px; }
+  .form-group input[type="email"] { padding: 12px 14px; }
+  .password-input input { padding: 12px 48px 12px 14px; font-size: 16px; }
+  .btn-login { padding: 14px; font-size: 15px; }
+  .login-info { font-size: 12px; margin-top: 20px; }
+}
+
+@media (min-width: 360px) {
+  .login-card { padding: 24px 18px; }
+  .logo { width: 68px; height: 68px; }
+  .logo-section h1 { font-size: 20px; }
+}
+
 @media (min-width: 400px) {
+  body { padding: 16px; }
   .login-card {
     padding: 32px 24px;
   }
